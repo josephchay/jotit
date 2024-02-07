@@ -1,4 +1,4 @@
-import { FaRegFileAlt } from "react-icons/fa";
+import { FaRegFileAlt, FaRegFilePdf, FaRegFileWord } from "react-icons/fa";
 
 export const Document = () => {
   return (
@@ -6,14 +6,42 @@ export const Document = () => {
       className="fixed z-[3] w-full h-full"
     >
       <div
-        className="relative w-60 h-80 rounded-2xl bg-primary-300/50"
+        className="relative w-60 h-80 rounded-[30px] px-4 py-10 bg-secondary-300/50 overflow-hidden"
       >
-        <FaRegFileAlt />
         <p
-          className="text-primary-700 leading-4"
+          className="text-md text-secondary-700"
         >
-          Document
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec dui nec odio tincidunt luctus
         </p>
+        <div
+          className="absolute bottom-0 left-0 w-full px-8 py-4 bg-primary-500/70"
+        >
+          <div
+            className="flex items-center justify-between"
+          >
+            <span
+              className="bg-secondary-300/30 rounded-full p-3"
+            >
+              <FaRegFileAlt
+                color="#000"
+              />
+            </span>
+            <span
+              className="bg-secondary-300/30 rounded-full p-3"
+            >
+              <FaRegFilePdf
+                color="#000"
+              />
+            </span>
+            <span
+              className="bg-secondary-300/30 rounded-full p-3"
+            >
+              <FaRegFileWord
+                color="#000"
+              />
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   )
