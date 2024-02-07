@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --foreground-color: hsl(220, 10%, 6%);
+  --background-color: hsl(220, 10%, 95%);
+}
+
+*::selection {
+  background-color: var(--background-color);
+  color: var(--foreground-color);
+}
+
+body {
+  font-family: "Meutas", sans-serif;
+}
+
+@font-face {
+  font-family: "Meutas";
+  src: url("./assets/fonts/font.otf") format("opentype");
+}

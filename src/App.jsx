@@ -1,9 +1,13 @@
-import React from "react";
+import { Background } from "./components/Background.jsx";
+import { Document } from "./components/Document.jsx";
 
 export default function App() {
   return (
-    <div>
-      <h1>JotIt</h1>
+    <div
+      className="relative w-full h-screen bg-primary-50"
+    >
+      <Background />
+      <Document />
     </div>
   );
 }
