@@ -12,6 +12,17 @@ export const Card = ({
     <motion.div
       drag
       dragConstraints={ groupRef }
+      dragElastic={ .2 }
+      dragTransition={{
+        bounceStiffness: 300,
+        bounceDamping: 10,
+      }}
+      whileTap={{
+        scale: 1.1,
+      }}
+      whileDrag={{
+        scale: 1.1,
+    }}
       className="relative w-60 h-80 flex-shrink-0 rounded-[30px] px-4 py-10 bg-gray-200/50 backdrop-blur-md overflow-hidden"
     >
       <h3
