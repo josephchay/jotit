@@ -5,32 +5,32 @@ export const Container = () => {
   const cards = [
     {
       tag: "Ipsum Dolor",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec dui nec odio tincidunt luctus",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec dui nec odio tincidunt luctus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       status: "downloaded",
     },
     {
       tag: "Ipsum Dolor",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec dui nec odio tincidunt luctus",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec dui nec odio tincidunt luctus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       status: "downloading",
     },
     {
       tag: "Ipsum Dolor",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec dui nec odio tincidunt luctus",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec dui nec odio tincidunt luctus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       status: "completed",
     },
     {
       tag: "Ipsum Dolor",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec dui nec odio tincidunt luctus",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec dui nec odio tincidunt luctus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       status: "downloaded",
     },
     {
       tag: "Ipsum Dolor",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec dui nec odio tincidunt luctus",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec dui nec odio tincidunt luctus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       status: "downloading",
     },
     {
       tag: "Ipsum Dolor",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec dui nec odio tincidunt luctus",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec dui nec odio tincidunt luctus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       status: "completed",
     },
   ]

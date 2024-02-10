@@ -17,12 +17,12 @@ export const Card = ({
         bounceStiffness: 300,
         bounceDamping: 10,
       }}
+      whileDrag={{
+        scale: 1.1,
+      }}
       whileTap={{
         scale: 1.1,
       }}
-      whileDrag={{
-        scale: 1.1,
-    }}
       className="relative w-60 h-80 flex-shrink-0 rounded-[30px] px-4 py-10 bg-gray-200/50 backdrop-blur-md overflow-hidden"
     >
       <h3
@@ -41,9 +41,20 @@ export const Card = ({
         <div
           className="flex items-center justify-between"
         >
-          <DownloadIcon type="pdf" />
-          <DownloadIcon type="word" />
-          <DownloadIcon />
+          <DownloadIcon
+            tag={ tag }
+            description={ description }
+            type="pdf"
+          />
+          <DownloadIcon
+            tag={ tag }
+            description={ description }
+            type="word"
+          />
+          <DownloadIcon
+            tag={ tag }
+            description={ description }
+          />
         </div>
       </div>
       {
