@@ -47,7 +47,8 @@ export const Background = () => {
         }
       </motion.div>
       <h1
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[240px] font-bold leading-none tracking-widest text-secondary-800"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[240px] font-bold leading-none tracking-widest text-secondary-800
+        selection:bg-transparent selection:text-secondary-800"
       >
         JOTIT
       </h1>

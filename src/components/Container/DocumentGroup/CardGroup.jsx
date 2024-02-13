@@ -1,76 +1,79 @@
 import { Card } from "../Document/Card.jsx";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import { NOTE_HEIGHT, NOTE_WIDTH } from "../../../constants/locals.js";
+import { id } from "../../../utils/math.js";
 
 export const CardGroup = () => {
   const ref = useRef(null);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  const items = [
-    {
+  useEffect(() => {
+    setIsInitialLoad(false);
+  }, []);
+
+  const [items, setItems] = useState(() => JSON.parse(localStorage.getItem("JotItProject")) || []);
+
+  const addItem = (e) => {
+    const newItems = [...items];
+
+    const x = e.clientX - NOTE_WIDTH / 2;
+    const y = e.clientY - NOTE_HEIGHT / 2;
+
+    newItems.push({
+      id: id(),
       pos: {
-        x: 0,
-        y: 0,
+        x,
+        y,
       },
       content: {
-        tag: "Ipsum Dolor",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec dui nec odio tincidunt luctus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        tag: "",
+        description: "",
       }
-    },
-    {
-      pos: {
-        x: 130,
-        y: 200,
-      },
-      content: {
-        tag: "Lorem Ipsum",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec dui nec odio tincidunt luctus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      }
-    },
-    {
-      pos: {
-        x: 700,
-        y: 400,
-      },
-      content: {
-        tag: "Dolor Sit",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec dui nec odio tincidunt luctus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      }
-    },
-    {
-      pos: {
-        x: 240,
-        y: 500,
-      },
-      content: {
-        tag: "Amet Consectetur",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec dui nec odio tincidunt luctus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      }
-    },
-    {
-      pos: {
-        x: 400,
-        y: 300,
-      },
-      content: {
-        tag: "Adipiscing Elit",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec dui nec odio tincidunt luctus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      }
-    },
-    {
-      pos: {
-        x: 800,
-        y: 100,
-      },
-      content: {
-        tag: "Nulla Nec Dui",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec dui nec odio tincidunt luctus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      }
-    },
-  ];
+    });
+
+    setItems(newItems);
+  }
+
+  const updateItemTag = (tag, id) => {
+    const newItems = items.map((item) =>
+      item.id === id
+        ? {
+          ...item,
+          content: {
+            ...item.content,
+            tag: tag,
+          },
+        }
+        : item
+    );
+    setItems(newItems);
+  };
+
+  const updateItemDescription = (description, id) => {
+    const newItems = items.map((item) =>
+      item.id === id
+        ? {
+          ...item,
+          content: {
+            ...item.content,
+            description: description,
+          },
+        }
+        : item
+    );
+    setItems(newItems);
+  }
+
+  useEffect(() => {
+    localStorage.setItem("JotItProject", JSON.stringify(items));
+  }, [items]);
 
   return (
     <div
       ref={ ref }
       className="fixed z-[3] w-full h-full"
+      onDoubleClick={ addItem }
     >
       {
         items.map((item, index) => (
@@ -78,8 +81,12 @@ export const CardGroup = () => {
             key={ index }
             index={ index }
             groupRef={ ref }
+            id={ item.id }
             pos={ item.pos }
             content={ item.content }
+            isInitialLoad={ isInitialLoad }
+            updateItemTag={ updateItemTag }
+            updateItemDescription={ updateItemDescription }
           />
         ))
       }

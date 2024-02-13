@@ -6,13 +6,27 @@ import { useState } from "react";
 export const Card = ({
   index,
   groupRef,
+  id,
   pos,
   content,
+  isInitialLoad,
+  updateItemTag,
+  updateItemDescription,
 }) => {
   const [downloadStatus, setDownloadStatus] = useState('idle');
 
   const updateDownloadStatus = async (status) => {
     setDownloadStatus(status);
+  }
+
+  let timer = 400, timeout;
+
+  const debounce = (func) => {
+    clearTimeout(timeout);
+
+    timeout = setTimeout(() => {
+      func();
+    }, timer);
   }
 
   const handleInputChange = (event, maxLines, maxChars) => {
@@ -104,12 +118,12 @@ export const Card = ({
         }}
         transition={{
           scale: {
-            delay: 1.2 + index * .2,
+            delay: isInitialLoad ? 1.2 + index * .2 : 0,
             ease: [0.2, 0.05, -0.01, 0.9],
             duration: 1,
           },
           y: {
-            delay: 1.4 + index * .2,
+            delay: isInitialLoad ? 1.4 + index * .2 : .2,
             ease: [0.2, 0.4, -0.01, 1],
             duration: 1.4,
           },
@@ -121,14 +135,22 @@ export const Card = ({
           <input
             type="text"
             defaultValue={ content.tag }
-            onChange={ e => handleInputChange(e, 1, 10) }
+            placeholder="Tag this Jot"
+            onChange={ e => {
+              handleInputChange(e, 1, 10)
+              debounce(() => updateItemTag(e.target.value, id))
+            }}
             onPointerDownCapture={ e => e.stopPropagation() }
             className="mb-3 resize-none bg-transparent outline-none text-xs font-bold tracking-wider text-secondary-900 selection:bg-gray-300/50 selection:text-secondary-900"
           ></input>
           <textarea
             defaultValue={ content.description }
+            placeholder="Jot this note"
             rows={ 8 }
-            onChange={ e => handleInputChange(e, 8, 16) }
+            onChange={ e => {
+              handleInputChange(e, 8, 16)
+              debounce(() => updateItemDescription(e.target.value, id))
+            }}
             onPointerDownCapture={ e => e.stopPropagation() }
             className="text-md w-full resize-none bg-transparent outline-none text-secondary-700 selection:bg-gray-300/50 selection:text-secondary-900"
           ></textarea>
@@ -161,7 +183,7 @@ export const Card = ({
             {
               (downloadStatus === 'completed' || downloadStatus === 'downloading') && (
                 <motion.div
-                  key={ `index-${downloadStatus}` }
+                  key={ `${id}-${index}-${downloadStatus}` }
                   initial={{
                     y: 100,
                   }}

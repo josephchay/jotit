@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { FaRegFileAlt, FaRegFilePdf } from "react-icons/fa";
 import jsPDF from "jspdf";
-import { useState } from "react";
 
 export const DownloadIcon = ({
   tag,
