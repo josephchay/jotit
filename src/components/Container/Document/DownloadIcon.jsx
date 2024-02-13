@@ -1,12 +1,14 @@
 import { motion } from "framer-motion";
 import { FaRegFileAlt, FaRegFilePdf } from "react-icons/fa";
 import jsPDF from "jspdf";
+import { useState } from "react";
 
 export const DownloadIcon = ({
   tag,
   description,
   type = 'txt',
   color = '#25272DFF',
+  updateDownloadStatus,
 }) => {
   let fileType;
   let fileName = `jotit-${tag}-`;
@@ -34,6 +36,8 @@ export const DownloadIcon = ({
   }
 
   const downloadPdf = () => {
+    updateDownloadStatus('downloading');
+
     const doc = new jsPDF({
       orientation: "portrait",
       unit: "mm",
@@ -43,11 +47,25 @@ export const DownloadIcon = ({
     doc.text("JotIt", 100, 20);
     doc.text(doc.splitTextToSize(`${tag}\n\n${description}`, 180), 20, 40);
     doc.save(`${fileName}${new Date().toISOString().replace(/:/g, '-')}.pdf`);
+
+    updateDownloadStatus('completed');
   }
 
   const downloadWord = () => {
+    updateDownloadStatus('downloading');
+
     // TODO: Implement downloadWord function
+
+    updateDownloadStatus('completed');
   }
+
+  const handleTxtDownload = () => {
+    updateDownloadStatus('downloading');
+
+    setTimeout(() => {
+      updateDownloadStatus('completed');
+    }, 400);
+  };
 
   return (
     <>
@@ -91,6 +109,7 @@ export const DownloadIcon = ({
               color: "inherit",
             }}
             onPointerDownCapture={ e => e.stopPropagation() }
+            onClick={ handleTxtDownload }
             className="bg-gray-300/40 rounded-full p-3 cursor-pointer"
           >
             <FaRegFileAlt
