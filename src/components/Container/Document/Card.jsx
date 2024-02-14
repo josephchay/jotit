@@ -12,6 +12,7 @@ export const Card = ({
   isInitialLoad,
   updateItemTag,
   updateItemDescription,
+  onAnimationComplete,
 }) => {
   const [downloadStatus, setDownloadStatus] = useState('idle');
 
@@ -86,48 +87,58 @@ export const Card = ({
 
   return (
     <motion.div
-      dragConstraints={ groupRef }
-      drag
-      dragElastic={ .2 }
-      dragTransition={{
-        bounceStiffness: 300,
-        bounceDamping: 10,
+      initial={{
+        scale: 0,
+        y: 100,
       }}
-      whileDrag={{
-        scale: 1.1,
+      animate={{
+        scale: 1,
+        y: 0,
       }}
-      whileTap={{
-        scale: 1.1,
+      transition={{
+        scale: {
+          delay: isInitialLoad ? 1.2 + index * .2 : 0,
+          ease: [0.2, 0.05, -0.01, 0.9],
+          duration: 1,
+        },
+        x: {
+          delay: isInitialLoad ? 1.4 + index * .2 : .2,
+          ease: [0.2, 0.4, -0.01, 1],
+          duration: 1.4,
+        },
+        y: {
+          delay: isInitialLoad ? 1.4 + index * .2 : .2,
+          ease: [0.2, 0.4, -0.01, 1],
+          duration: 1.4,
+        },
       }}
       style={{
-        position: 'absolute',
-        left: pos.x,
-        top: pos.y,
+        position: 'relative',
       }}
-      onClick={ handleClick }
-      onMouseDown={ moveToFront }
+      onAnimationComplete={ onAnimationComplete }
     >
       <motion.div
-        initial={{
-          scale: 0,
-          y: 100,
+        dragConstraints={ groupRef }
+        drag
+        dragElastic={ .2 }
+        dragTransition={{
+          bounceStiffness: 300,
+          bounceDamping: 10,
         }}
-        animate={{
-          scale: 1,
-          y: 0,
+        whileDrag={{
+          scale: 1.1,
         }}
-        transition={{
-          scale: {
-            delay: isInitialLoad ? 1.2 + index * .2 : 0,
-            ease: [0.2, 0.05, -0.01, 0.9],
-            duration: 1,
-          },
-          y: {
-            delay: isInitialLoad ? 1.4 + index * .2 : .2,
-            ease: [0.2, 0.4, -0.01, 1],
-            duration: 1.4,
-          },
+        whileTap={{
+          scale: 1.1,
         }}
+        style={{
+          position: 'absolute',
+          left: pos.x,
+          top: pos.y,
+        }}
+        onDoubleClick={ e => e.stopPropagation() } // prevent adding a new card when double clicking
+        onClick={ handleClick }
+        onMouseDown={ moveToFront }
       >
         <div
           className="relative w-64 h-80 flex-shrink-0 rounded-3xl px-5 py-6 bg-gray-200/50 backdrop-blur-md overflow-hidden"

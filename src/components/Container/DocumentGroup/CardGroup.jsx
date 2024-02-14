@@ -4,7 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { NOTE_HEIGHT, NOTE_WIDTH } from "../../../constants/locals.js";
 import { id } from "../../../utils/math.js";
 
-export const CardGroup = () => {
+export const CardGroup = (
+  { setAction }
+) => {
   const ref = useRef(null);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
@@ -13,15 +15,26 @@ export const CardGroup = () => {
   }, []);
 
   const [items, setItems] = useState(() => JSON.parse(localStorage.getItem("JotItProject")) || []);
+  const [animationCompleted, setAnimationCompleted] = useState(() => {
+    const initialAnimationCompleted = {};
+    items.forEach((item) => {
+      initialAnimationCompleted[item.id] = false;
+    });
+    return initialAnimationCompleted;
+  });
 
   const addItem = (e) => {
     const newItems = [...items];
 
-    const x = e.clientX - NOTE_WIDTH / 2;
-    const y = e.clientY - NOTE_HEIGHT / 2;
+    const maxX = window.innerWidth - NOTE_WIDTH;
+    const maxY = window.innerHeight - NOTE_HEIGHT;
+    const x = Math.max(0, Math.min(e.clientX - NOTE_WIDTH / 2, maxX));
+    const y = Math.max(0, Math.min(e.clientY - NOTE_HEIGHT / 2, maxY));
+
+    const uniqueId = id();
 
     newItems.push({
-      id: id(),
+      id: uniqueId,
       pos: {
         x,
         y,
@@ -33,7 +46,20 @@ export const CardGroup = () => {
     });
 
     setItems(newItems);
+
+    // Set the animation completion status for the new item to false
+    setAnimationCompleted((prev) => ({
+      ...prev,
+      [uniqueId]: false,
+    }));
   }
+
+  const handleAnimationComplete = (id) => {
+    setAnimationCompleted((prev) => ({
+      ...prev,
+      [id]: true,
+    }));
+  };
 
   const updateItemTag = (tag, id) => {
     const newItems = items.map((item) =>
@@ -67,7 +93,12 @@ export const CardGroup = () => {
 
   useEffect(() => {
     localStorage.setItem("JotItProject", JSON.stringify(items));
-  }, [items]);
+
+    // Check if all cards have completed animation
+    if (Object.values(animationCompleted).every((status) => status)) {
+      setAction("idle");
+    }
+  }, [animationCompleted, items, setAction]);
 
   return (
     <div
@@ -87,6 +118,7 @@ export const CardGroup = () => {
             isInitialLoad={ isInitialLoad }
             updateItemTag={ updateItemTag }
             updateItemDescription={ updateItemDescription }
+            onAnimationComplete={() => handleAnimationComplete(item.id)}
           />
         ))
       }
