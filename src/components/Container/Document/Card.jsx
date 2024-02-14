@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { DownloadIcon } from "./DownloadIcon.jsx";
 import { useState } from "react";
+import { NOTE_DELETION_HOLD_TIME } from "../../../constants/locals.js";
 
 export const Card = ({
   index,
@@ -9,10 +10,11 @@ export const Card = ({
   id,
   pos,
   content,
-  isInitialLoad,
   updateItemTag,
   updateItemDescription,
   onAnimationComplete,
+  action,
+  updateAction,
 }) => {
   const [downloadStatus, setDownloadStatus] = useState('idle');
 
@@ -20,14 +22,14 @@ export const Card = ({
     setDownloadStatus(status);
   }
 
-  let timer = 400, timeout;
+  let inputTimer = 400, inputTimeout;
 
   const debounce = (func) => {
-    clearTimeout(timeout);
+    clearTimeout(inputTimeout);
 
-    timeout = setTimeout(() => {
+    inputTimeout = setTimeout(() => {
       func();
-    }, timer);
+    }, inputTimer);
   }
 
   const handleInputChange = (event, maxLines, maxChars) => {
@@ -79,6 +81,22 @@ export const Card = ({
     });
   }
 
+  let mouseHoldTimer = NOTE_DELETION_HOLD_TIME, mouseHoldTimeout;
+
+  const handleMouseDown = () => {
+    moveToFront();
+
+    mouseHoldTimeout = setTimeout(() => {
+      updateAction('delete');
+    }, mouseHoldTimer);
+  }
+
+  const handleMouseUp = () => {
+    clearTimeout(mouseHoldTimeout);
+
+    updateAction('idle');
+  }
+
   const handleClick = () => {
     if (downloadStatus === 'completed') {
       updateDownloadStatus('idle');
@@ -97,17 +115,17 @@ export const Card = ({
       }}
       transition={{
         scale: {
-          delay: isInitialLoad ? 1.2 + index * .2 : 0,
+          delay: action === 'fresh' ? 1.2 + index * .2 : 0,
           ease: [0.2, 0.05, -0.01, 0.9],
           duration: 1,
         },
         x: {
-          delay: isInitialLoad ? 1.4 + index * .2 : .2,
+          delay: action === 'fresh' ? 1.4 + index * .2 : .2,
           ease: [0.2, 0.4, -0.01, 1],
           duration: 1.4,
         },
         y: {
-          delay: isInitialLoad ? 1.4 + index * .2 : .2,
+          delay: action === 'fresh' ? 1.4 + index * .2 : .2,
           ease: [0.2, 0.4, -0.01, 1],
           duration: 1.4,
         },
@@ -138,7 +156,8 @@ export const Card = ({
         }}
         onDoubleClick={ e => e.stopPropagation() } // prevent adding a new card when double clicking
         onClick={ handleClick }
-        onMouseDown={ moveToFront }
+        onMouseDown={ handleMouseDown }
+        onMouseUp={ handleMouseUp }
       >
         <div
           className="relative w-64 h-80 flex-shrink-0 rounded-3xl px-5 py-6 bg-gray-200/50 backdrop-blur-md overflow-hidden"

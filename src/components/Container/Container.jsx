@@ -3,17 +3,16 @@ import { CardGroup } from "./DocumentGroup/CardGroup.jsx";
 import { useEffect, useState } from "react";
 
 export const Container = () => {
-  const [action, setAction] = useState('idle');
+  const [action, setAction] = useState('fresh');
 
   useEffect(() => {
-    setAction('ejecting')
+    setAction('ejecting');
   }, []);
 
   return (
     <div>
       <Background
         action={ action }
-        setAction={ setAction }
       />
       <CardGroup
         action={ action }

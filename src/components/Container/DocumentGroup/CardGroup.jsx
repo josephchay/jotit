@@ -5,14 +5,9 @@ import { NOTE_HEIGHT, NOTE_WIDTH } from "../../../constants/locals.js";
 import { id } from "../../../utils/math.js";
 
 export const CardGroup = (
-  { setAction }
+  { action, setAction }
 ) => {
   const ref = useRef(null);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
-
-  useEffect(() => {
-    setIsInitialLoad(false);
-  }, []);
 
   const [items, setItems] = useState(() => JSON.parse(localStorage.getItem("JotItProject")) || []);
   const [animationCompleted, setAnimationCompleted] = useState(() => {
@@ -52,6 +47,11 @@ export const CardGroup = (
       ...prev,
       [uniqueId]: false,
     }));
+  }
+
+  const handleDoubleClick = (e) => {
+    setAction("ejecting");
+    addItem(e);
   }
 
   const handleAnimationComplete = (id) => {
@@ -104,7 +104,7 @@ export const CardGroup = (
     <div
       ref={ ref }
       className="fixed z-[3] w-full h-full"
-      onDoubleClick={ addItem }
+      onDoubleClick={ handleDoubleClick }
     >
       {
         items.map((item, index) => (
@@ -115,10 +115,11 @@ export const CardGroup = (
             id={ item.id }
             pos={ item.pos }
             content={ item.content }
-            isInitialLoad={ isInitialLoad }
             updateItemTag={ updateItemTag }
             updateItemDescription={ updateItemDescription }
             onAnimationComplete={() => handleAnimationComplete(item.id)}
+            action={ action }
+            updateAction={ setAction }
           />
         ))
       }
