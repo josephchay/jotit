@@ -6,7 +6,9 @@ export const Container = () => {
   const [action, setAction] = useState('fresh');
 
   useEffect(() => {
-    setAction('ejecting');
+    if (localStorage.getItem("JotItProject") && JSON.parse(localStorage.getItem("JotItProject")).length > 0) {
+      setAction('ejecting');
+    }
   }, []);
 
   return (

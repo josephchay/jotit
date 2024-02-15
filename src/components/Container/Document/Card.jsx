@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 
 import { DownloadIcon } from "./DownloadIcon.jsx";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NOTE_DELETION_HOLD_TIME } from "../../../constants/locals.js";
 
 export const Card = ({
@@ -10,12 +10,21 @@ export const Card = ({
   id,
   pos,
   content,
-  updateItemTag,
-  updateItemDescription,
+  updateTag,
+  updateDescription,
+  updatePosition,
   onAnimationComplete,
   action,
   updateAction,
 }) => {
+  const [initialPos, setInitialPos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    setInitialPos(pos);
+  }, []);
+
+  const draggableDivRef = useRef(null);
+
   const [downloadStatus, setDownloadStatus] = useState('idle');
 
   const updateDownloadStatus = async (status) => {
@@ -103,6 +112,38 @@ export const Card = ({
     }
   }
 
+  const draggableDivStyles = {
+    position: 'absolute',
+    left: pos.x,
+    top: pos.y,
+    // transform: 'none',
+  }
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      const rect = draggableDivRef.current.getBoundingClientRect();
+
+      const newX = rect.left - window.scrollX;
+      const newY = rect.top - window.scrollY;
+
+      updatePosition({
+        x: newX,
+        y: newY,
+      }, id);
+
+      /* Everything is working but right after updating the position, the transform translate X and Y
+      * is still in the styles which causes a slight element position leap before ending.
+      * TODO: fix this  */
+      // draggableDivStyles.transform = 'none'
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    }
+  }, [id, initialPos.x, initialPos.y, updatePosition]);
+
   return (
     <motion.div
       initial={{
@@ -136,6 +177,7 @@ export const Card = ({
       onAnimationComplete={ onAnimationComplete }
     >
       <motion.div
+        ref={ draggableDivRef }
         dragConstraints={ groupRef }
         drag
         dragElastic={ .2 }
@@ -143,17 +185,13 @@ export const Card = ({
           bounceStiffness: 300,
           bounceDamping: 10,
         }}
-        whileDrag={{
-          scale: 1.1,
-        }}
-        whileTap={{
-          scale: 1.1,
-        }}
-        style={{
-          position: 'absolute',
-          left: pos.x,
-          top: pos.y,
-        }}
+        // whileDrag={{
+        //   scale: 1.1,
+        // }}
+        // whileTap={{
+        //   scale: 1.1,
+        // }}
+        style={ draggableDivStyles }
         onDoubleClick={ e => e.stopPropagation() } // prevent adding a new card when double clicking
         onClick={ handleClick }
         onMouseDown={ handleMouseDown }
@@ -168,7 +206,7 @@ export const Card = ({
             placeholder="Tag this Jot"
             onChange={ e => {
               handleInputChange(e, 1, 10)
-              debounce(() => updateItemTag(e.target.value, id))
+              debounce(() => updateTag(e.target.value, id))
             }}
             onPointerDownCapture={ e => e.stopPropagation() }
             className="mb-3 resize-none bg-transparent outline-none text-xs font-bold tracking-wider text-secondary-900 selection:bg-gray-300/50 selection:text-secondary-900"
@@ -179,13 +217,13 @@ export const Card = ({
             rows={ 8 }
             onChange={ e => {
               handleInputChange(e, 8, 16)
-              debounce(() => updateItemDescription(e.target.value, id))
+              debounce(() => updateDescription(e.target.value, id))
             }}
             onPointerDownCapture={ e => e.stopPropagation() }
             className="text-md w-full resize-none bg-transparent outline-none text-secondary-700 selection:bg-gray-300/50 selection:text-secondary-900"
           ></textarea>
           <div
-            className="absolute bottom-0 left-0 w-full px-8 py-3 bg-gray-300/30"
+            className="absolute bottom-0 left-0 pointer-events-none w-full px-8 py-3 bg-gray-300/30"
           >
             <div
               className="flex items-center justify-between"

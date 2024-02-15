@@ -91,6 +91,18 @@ export const CardGroup = (
     setItems(newItems);
   }
 
+  const updateItemPosition = (pos, id) => {
+    const newItems = items.map((item) =>
+      item.id === id
+        ? {
+          ...item,
+          pos: pos,
+        }
+        : item
+    );
+    setItems(newItems);
+  }
+
   useEffect(() => {
     localStorage.setItem("JotItProject", JSON.stringify(items));
 
@@ -115,8 +127,9 @@ export const CardGroup = (
             id={ item.id }
             pos={ item.pos }
             content={ item.content }
-            updateItemTag={ updateItemTag }
-            updateItemDescription={ updateItemDescription }
+            updateTag={ updateItemTag }
+            updateDescription={ updateItemDescription }
+            updatePosition={ updateItemPosition }
             onAnimationComplete={() => handleAnimationComplete(item.id)}
             action={ action }
             updateAction={ setAction }
