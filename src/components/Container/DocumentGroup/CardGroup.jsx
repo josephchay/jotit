@@ -3,11 +3,13 @@ import { useEffect, useRef, useState } from "react";
 
 import { NOTE_HEIGHT, NOTE_WIDTH } from "../../../constants/locals.js";
 import { id } from "../../../utils/math.js";
+import { Actions } from "../../../enums/Actions.js";
 
 export const CardGroup = (
   { action, setAction }
 ) => {
   const ref = useRef(null);
+  const cardRefs = useRef({});
 
   const [items, setItems] = useState(() => JSON.parse(localStorage.getItem("JotItProject")) || []);
   const [animationCompleted, setAnimationCompleted] = useState(() => {
@@ -50,7 +52,7 @@ export const CardGroup = (
   }
 
   const handleDoubleClick = (e) => {
-    setAction("ejecting");
+    setAction(Actions.EJECTING);
     addItem(e);
   }
 
@@ -91,26 +93,57 @@ export const CardGroup = (
     setItems(newItems);
   }
 
-  const updateItemPosition = (pos, id) => {
-    const newItems = items.map((item) =>
-      item.id === id
-        ? {
-          ...item,
-          pos: pos,
-        }
-        : item
-    );
-    setItems(newItems);
-  }
-
   useEffect(() => {
     localStorage.setItem("JotItProject", JSON.stringify(items));
 
     // Check if all cards have completed animation
     if (Object.values(animationCompleted).every((status) => status)) {
-      setAction("idle");
+      setAction(Actions.IDLE);
     }
   }, [animationCompleted, items, setAction]);
+
+  useEffect(() => {
+    const updateItemPosition = (pos, id) => {
+      const newItems = items.map((item) =>
+        item.id === id
+          ? {
+            ...item,
+            pos: pos,
+          }
+          : item
+      );
+      setItems(newItems);
+    }
+
+    const handleBeforeUnload = () => {
+      items.forEach((item) => {
+        const cardRef = cardRefs.current[item.id];
+
+        const rect = cardRef.getBoundingClientRect();
+        console.log(rect)
+
+        const currEleX = rect.left - window.scrollX;
+        const currEleY = rect.top - window.scrollY;
+
+        updateItemPosition({
+          x: currEleX,
+          y: currEleY,
+        }, item.id);
+        // console.log('hello', currEleX, currEleY)
+
+        /* Everything is working but right after updating the position, the transform translate X and Y
+        * is still in the styles which causes a slight element position leap before ending.
+        * TODO: fix this && also consider assigning modifiable styles to the CardDraggable for the transform property */
+        // draggableDivStyles.transform = 'none'
+      });
+    };
+    // handleBeforeUnload();
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    }
+  }, [items]);
 
   return (
     <div
@@ -129,10 +162,10 @@ export const CardGroup = (
             content={ item.content }
             updateTag={ updateItemTag }
             updateDescription={ updateItemDescription }
-            updatePosition={ updateItemPosition }
             onAnimationComplete={() => handleAnimationComplete(item.id)}
             action={ action }
             updateAction={ setAction }
+            ref={ (ref) => cardRefs.current[item.id] = ref }
           />
         ))
       }

@@ -1,13 +1,15 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { FaFolder, FaFolderOpen, FaTrashAlt } from "react-icons/fa";
 
+import { Actions } from "../../enums/Actions.js";
+
 const icons = {
   'folder': <FaFolder
     key="folder"
     size={ 24 }
   />,
   'folder-open': <FaFolderOpen
-    key="folder"
+    key="folder-open"
     size={ 24 }
   />,
   'trash': <FaTrashAlt
@@ -37,7 +39,7 @@ const variants = {
 export const Background = (
   { action }
 ) => {
-  const icon = action === 'idle' ? 'folder' : action === 'ejecting' ? 'folder-open' : 'trash';
+  const icon = action === Actions.IDLE ? 'folder' : action === Actions.EJECTING ? 'folder-open' : 'trash';
 
   return (
     <div
