@@ -73,6 +73,7 @@ export const DownloadIcon = ({
           <motion.span
             onPointerDownCapture={ e => e.stopPropagation() }
             onClick={ downloadPdf }
+            onDragStart={ e => e.preventDefault() }
             className="bg-gray-300/40 rounded-full p-3 cursor-pointer pointer-events-auto"
           >
             <FaRegFilePdf
@@ -87,6 +88,7 @@ export const DownloadIcon = ({
           <span
             onPointerDownCapture={ e => e.stopPropagation() }
             onClick={ downloadWord }
+            onDragStart={ e => e.preventDefault() }
             className="bg-gray-300/40 rounded-full p-3 cursor-pointer pointer-events-auto"
           >
             <FaRegFileAlt
@@ -109,6 +111,7 @@ export const DownloadIcon = ({
             }}
             onPointerDownCapture={ e => e.stopPropagation() }
             onClick={ handleTxtDownload }
+            onDragStart={ e => e.preventDefault() }
             className="bg-gray-300/40 rounded-full p-3 cursor-pointer pointer-events-auto"
           >
             <FaRegFileAlt

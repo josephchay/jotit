@@ -148,6 +148,7 @@ const Card = forwardRef(
   return (
     <div
       ref={ ref }
+      className="relative"
     >
       <CardFresh
         index={ index }

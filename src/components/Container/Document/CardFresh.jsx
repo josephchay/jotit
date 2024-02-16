@@ -35,9 +35,6 @@ export const CardFresh = ({
           duration: 1.4,
         },
       }}
-      style={{
-        position: 'relative',
-      }}
       onAnimationComplete={ onAnimationComplete }
     >
       { children }
