@@ -165,6 +165,9 @@ export const CardGroup = ({
                 duration: 0.25,
                 ease: "easeIn",
               }}
+              style={{
+                position: "relative",  // for the z-index to work
+              }}
             >
               <Card
                 key={ index }

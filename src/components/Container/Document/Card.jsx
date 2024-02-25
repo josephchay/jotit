@@ -134,7 +134,7 @@ const Card = forwardRef(({
           <CardTag
             defaultVal={ content.tag }
             onChange={ e => {
-              handleInputChange(e, 1, 10)
+              handleInputChange(e, 1, 16)
               debounce(() => updateTag(e.target.value, id))
             }}
           />
