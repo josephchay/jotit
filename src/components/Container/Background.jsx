@@ -1,22 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { FaFolder, FaFolderOpen, FaTrashAlt } from "react-icons/fa";
 
 import { Actions } from "../../enums/Actions.js";
-
-const icons = {
-  'folder': <FaFolder
-    key="folder"
-    size={ 24 }
-  />,
-  'folder-open': <FaFolderOpen
-    key="folder-open"
-    size={ 24 }
-  />,
-  'trash': <FaTrashAlt
-    key="trash"
-    size={ 20 }
-  />,
-};
 
 const variants = {
   enter: {
@@ -36,9 +20,10 @@ const variants = {
   },
 };
 
-export const Background = (
-  { action }
-) => {
+export const Background = ({
+  action,
+  icons,
+}) => {
   const icon = action === Actions.IDLE ? 'folder' : action === Actions.EJECTING ? 'folder-open' : 'trash';
 
   return (

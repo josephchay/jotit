@@ -1,13 +1,16 @@
-import { Card } from "../Document/Card.jsx";
 import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { LOCAL_STORAGE_KEY, NOTE_HEIGHT, NOTE_WIDTH } from "../../../constants/locals.js";
 import { id } from "../../../utils/math.js";
 import { Actions } from "../../../enums/Actions.js";
+import { Card } from "../Document/Card.jsx";
 
-export const CardGroup = (
-  { action, setAction }
-) => {
+export const CardGroup = ({
+  action,
+  setAction,
+  setTrashIconScale,
+}) => {
   const ref = useRef(null);
   const cardRefs = useRef({});
 
@@ -49,6 +52,11 @@ export const CardGroup = (
       ...prev,
       [uniqueId]: false,
     }));
+  }
+
+  const delItem = (id) => {
+    const newItems = items.filter((item) => item.id !== id);
+    setItems(newItems);
   }
 
   const handleDoubleClick = (e) => {
@@ -95,7 +103,6 @@ export const CardGroup = (
 
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(items));
-    console.log('items updated', items);
 
     // Check if all cards have completed animation
     if (Object.values(animationCompleted).every((status) => status)) {
@@ -133,10 +140,10 @@ export const CardGroup = (
     /* Appears that more than or equal to 5 items begins to prevent failure of complete
     * update for all items' positions due to the asynchronous nature of unload event.
     * TODO: Ensure all items' positions update before app closure regardless of amounts of items. */
-    window.addEventListener('unload', handleBeforeUnload);
+    window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
-      window.removeEventListener('unload', handleBeforeUnload);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
     }
   }, [items]);
 
@@ -146,24 +153,39 @@ export const CardGroup = (
       className="fixed z-[3] w-full h-full"
       onDoubleClick={ handleDoubleClick }
     >
-      {
-        items.map((item, index) => (
-          <Card
-            key={ index }
-            index={ index }
-            groupRef={ ref }
-            id={ item.id }
-            pos={ item.pos }
-            content={ item.content }
-            updateTag={ updateItemTag }
-            updateDescription={ updateItemDescription }
-            onAnimationComplete={() => handleAnimationComplete(item.id)}
-            action={ action }
-            updateAction={ setAction }
-            ref={ (ref) => cardRefs.current[item.id] = ref }
-          />
-        ))
-      }
+      <AnimatePresence>
+        {
+          items.map((item, index) => (
+            <motion.div
+              key={ item.id }
+              exit={{
+                scale: [1, 1.3, 0],
+              }}
+              transition={{
+                duration: 0.25,
+                ease: "easeIn",
+              }}
+            >
+              <Card
+                key={ index }
+                index={ index }
+                groupRef={ ref }
+                id={ item.id }
+                pos={ item.pos }
+                content={ item.content }
+                updateTag={ updateItemTag }
+                updateDescription={ updateItemDescription }
+                onAnimationComplete={() => handleAnimationComplete(item.id)}
+                action={ action }
+                updateAction={ setAction }
+                onTrash={ delItem }
+                onTrashable={ setTrashIconScale }
+                ref={ (ref) => cardRefs.current[item.id] = ref }
+              />
+            </motion.div>
+          ))
+        }
+      </AnimatePresence>
     </div>
   )
 }

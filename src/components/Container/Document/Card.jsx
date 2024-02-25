@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, useState } from "react";
 
 import { CardTag } from "./CardTag.jsx";
 import { CardNote } from "./CardNote.jsx";
@@ -10,54 +10,20 @@ import { NOTE_DELETION_HOLD_TIME } from "../../../constants/locals.js";
 import { Actions } from "../../../enums/Actions.js";
 import { DownloadStatus } from "../../../enums/DownloadStatus.js";
 
-const isThrashing = (enabled, rect) => {
-  // Check whether if the Card is being thrashed.
-  if (enabled) {
-    const screenCenterHorizontal = window.innerWidth / 2;
-    const screenCenterVertical = window.innerHeight / 2;
-    const threshold = 100;
-
-    if (
-      rect.left > screenCenterHorizontal - threshold &&
-      rect.right < screenCenterHorizontal + threshold &&
-      rect.top > screenCenterVertical - threshold &&
-      rect.bottom < screenCenterVertical + threshold
-    ) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-const Card = forwardRef(
-(
-  {
-    index,
-    groupRef,
-    id,
-    pos,
-    content,
-    updateTag,
-    updateDescription,
-    onAnimationComplete,
-    action,
-    updateAction,
-  },
-  draggableRef
-) => {
-  const ref = useRef(null);
-
-  useEffect(() => {
-    if (action === Actions.THRASHING) {
-      const rect = ref.current.getBoundingClientRect();
-
-      if (isThrashing(true, rect)) {
-        console.log('thrashing');
-      }
-    }
-  }, []);
-
+const Card = forwardRef(({
+  index,
+  groupRef,
+  id,
+  pos,
+  content,
+  updateTag,
+  updateDescription,
+  onAnimationComplete,
+  action,
+  updateAction,
+  onTrash,
+  onTrashable,
+}, draggableRef) => {
   const [downloadStatus, setDownloadStatus] = useState(DownloadStatus.IDLE);
 
   const updateDownloadStatus = async (status) => {
@@ -146,66 +112,66 @@ const Card = forwardRef(
   }
 
   return (
-    <div
-      ref={ ref }
-      className="relative"
+    <CardFresh
+      index={ index }
+      pos={ pos }
+      action={ action }
+      onAnimationComplete={ onAnimationComplete }
     >
-      <CardFresh
-        index={ index }
+      <CardDraggable
+        id={ id }
+        pos={ pos }
+        constraints={ groupRef }
         action={ action }
-        onAnimationComplete={ onAnimationComplete }
+        onClick={ handleClick }
+        onMouseDown={ handleMouseDown }
+        onMouseUp={ handleMouseUp }
+        onTrash={ onTrash }
+        onTrashable={ onTrashable }
+        ref={ draggableRef }
       >
-        <CardDraggable
-          pos={ pos }
-          constraints={ groupRef }
-          onClick={ handleClick }
-          onMouseDown={ handleMouseDown }
-          onMouseUp={ handleMouseUp }
-          ref={ draggableRef }
-        >
-          <CardContent>
-            <CardTag
-              defaultVal={ content.tag }
-              onChange={ e => {
-                handleInputChange(e, 1, 10)
-                debounce(() => updateTag(e.target.value, id))
-              }}
-            />
-            <CardNote
-              defaultVal={ content.description }
-              onChange={ e => {
-                handleInputChange(e, 8, 16)
-                debounce(() => updateDescription(e.target.value, id))
-              }}
-            />
-            <DownloadPanel>
-              <DownloadOptions>
-                <DownloadIcon
-                  tag={ content.tag }
-                  description={ content.description }
-                  type="pdf"
-                  updateDownloadStatus={ updateDownloadStatus }
-                />
-                <DownloadIcon
-                  tag={ content.tag }
-                  description={ content.description }
-                  type="word"
-                  updateDownloadStatus={ updateDownloadStatus }
-                />
-                <DownloadIcon
-                  tag={ content.tag }
-                  description={ content.description }
-                  updateDownloadStatus={ updateDownloadStatus }
-                />
-              </DownloadOptions>
-              <DownloadToast
-                status={ downloadStatus }
+        <CardContent>
+          <CardTag
+            defaultVal={ content.tag }
+            onChange={ e => {
+              handleInputChange(e, 1, 10)
+              debounce(() => updateTag(e.target.value, id))
+            }}
+          />
+          <CardNote
+            defaultVal={ content.description }
+            onChange={ e => {
+              handleInputChange(e, 8, 16)
+              debounce(() => updateDescription(e.target.value, id))
+            }}
+          />
+          <DownloadPanel>
+            <DownloadOptions>
+              <DownloadIcon
+                tag={ content.tag }
+                description={ content.description }
+                type="pdf"
+                updateDownloadStatus={ updateDownloadStatus }
               />
-            </DownloadPanel>
-          </CardContent>
-        </CardDraggable>
-      </CardFresh>
-    </div>
+              <DownloadIcon
+                tag={ content.tag }
+                description={ content.description }
+                type="word"
+                updateDownloadStatus={ updateDownloadStatus }
+              />
+              <DownloadIcon
+                tag={ content.tag }
+                description={ content.description }
+                updateDownloadStatus={ updateDownloadStatus }
+              />
+            </DownloadOptions>
+            <DownloadToast
+              status={ downloadStatus }
+            />
+          </DownloadPanel>
+        </CardContent>
+      </CardDraggable>
+    </CardFresh>
   );
 });
 

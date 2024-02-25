@@ -8,6 +8,7 @@ export const CardNote = ({
       <textarea
         defaultValue={ defaultVal }
         placeholder={ placeholder }
+        autoFocus={ true }
         rows={ 8 }
         onChange={ onChange }
         onPointerDownCapture={ e => e.stopPropagation() }

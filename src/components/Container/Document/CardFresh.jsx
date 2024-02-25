@@ -10,6 +10,9 @@ export const CardFresh = ({
 }) => {
   return (
     <motion.div
+      style={{
+        position: "relative",
+      }}
       initial={{
         scale: 0,
         y: 100,
