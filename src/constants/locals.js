@@ -1,4 +1,4 @@
-export const LOCAL_STORAGE_KEY = 'JotItProject';
+export const SESSION_STORAGE_KEY = 'JotItProject';
 
 export const NOTE_WIDTH = 256;
 export const NOTE_HEIGHT = 320;

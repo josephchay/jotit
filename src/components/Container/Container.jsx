@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Background } from "./Background.jsx";
 import { CardGroup } from "./DocumentGroup/CardGroup.jsx";
 import { Actions } from "../../enums/Actions.js";
-import { LOCAL_STORAGE_KEY } from "../../constants/locals.js";
+import { SESSION_STORAGE_KEY } from "../../constants/locals.js";
 import { FaFolder, FaFolderOpen, FaTrashAlt } from "react-icons/fa";
 
 export const Container = () => {
@@ -11,7 +11,7 @@ export const Container = () => {
   const [trashIconScale, setTrashIconScale] = useState(1);
 
   useEffect(() => {
-    if (localStorage.getItem(LOCAL_STORAGE_KEY) && JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)).length > 0) {
+    if (sessionStorage.getItem(SESSION_STORAGE_KEY) && JSON.parse(sessionStorage.getItem(SESSION_STORAGE_KEY)).length > 0) {
       setAction(Actions.EJECTING);
     }
   }, []);

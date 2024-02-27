@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-import { LOCAL_STORAGE_KEY, NOTE_HEIGHT, NOTE_WIDTH } from "../../../constants/locals.js";
+import { SESSION_STORAGE_KEY, NOTE_HEIGHT, NOTE_WIDTH } from "../../../constants/locals.js";
 import { id } from "../../../utils/math.js";
 import { Actions } from "../../../enums/Actions.js";
 import { Card } from "../Document/Card.jsx";
@@ -14,7 +14,7 @@ export const CardGroup = ({
   const ref = useRef(null);
   const cardRefs = useRef({});
 
-  const [items, setItems] = useState(() => JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || []);
+  const [items, setItems] = useState(() => JSON.parse(sessionStorage.getItem(SESSION_STORAGE_KEY)) || []);
   const [animationCompleted, setAnimationCompleted] = useState(() => {
     const initialAnimationCompleted = {};
     items.forEach((item) => {
@@ -102,7 +102,7 @@ export const CardGroup = ({
   }
 
   useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(items));
+    sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(items));
 
     // Check if all cards have completed animation
     if (Object.values(animationCompleted).every((status) => status)) {
