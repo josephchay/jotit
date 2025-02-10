@@ -68,6 +68,11 @@ export const Background = ({
       >
         JOTIT
       </h1>
+      <div
+        className="absolute bottom-10 w-full text-center text-sm tracking-wider text-secondary-600 selection:bg-transparent selection:text-secondary-600"
+      >
+        Created by <span className="font-medium">Joseph Chay</span>
+      </div>
     </div>
   );
 };
